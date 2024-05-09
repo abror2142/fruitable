@@ -1,5 +1,5 @@
 <div class="col-md-6 col-lg-4 col-xl-3">
-    <a href="{% url 'detail' product.pk %}" style="text-decoration: none; color: black">
+    <a href="{% url 'detail' product.slug %}" style="text-decoration: none; color: black">
         <div class="rounded position-relative fruite-item">
             <div class="fruite-img">
                 <img src="{{ product.image.url }}"

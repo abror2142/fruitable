@@ -2,7 +2,12 @@
 {% load static %}
 
 {% block hero %}
-<!-- Single Page Header start -->
+
+
+
+
+
+    <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Shop Detail</h1>
     <ol class="breadcrumb justify-content-center mb-0">
@@ -16,6 +21,26 @@
 
 
 {% block main %}
+    <style>
+        .rating-list li {
+            float: right;
+            color: #ddd;
+            padding: 10px 5px;
+        }
+
+        .rating-list li:hover,
+        .rating-list li:hover ~ li {
+            color: orange;
+        }
+
+        .rating-list {
+            display: inline-block;
+            list-style: none;
+        }
+        .checked {
+            color: orange;
+        }
+    </style>
 <!-- Single Product Start -->
 <div class="container-fluid py-5 mt-5">
     <div class="container py-5">
@@ -33,13 +58,25 @@
                         <h4 class="fw-bold mb-3">{{ product.name }}</h4>
                         <p class="mb-3">Category: {{ product.category.name }}</p>
                         <h5 class="fw-bold mb-3">{{ product.price }} $</h5>
-                        <div class="d-flex mb-4">
-                            <form method="post">
-                                {% csrf_token %}
-                                {{ rating.as_p }}
-                                <button type="submit">Submit</button>
-                            </form>
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.header }}</h5>
+                            <p class="card-text">{{ post.text }}</p>
+                            <ul class="btn btn-light list-inline rating-list">
+                                <li onclick="rate(5, {{ product.id }})">
+                                    <i class="fa fa-star {% if user_rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
+                                <li onclick="rate(4, {{ product.id }})">
+                                    <i class="fa fa-star {% if user_rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
+                                <li onclick="rate(3, {{ product.id }})">
+                                    <i class="fa fa-star {% if user_rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
+                                <li onclick="rate(2, {{ product.id }})">
+                                    <i class="fa fa-star {% if user_rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
+                                <li onclick="rate(1, {{ product.id }})">
+                                    <i class="fa fa-star {% if user_rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
+                            </ul>
                         </div>
+
+
                         <p class="mb-4">{{ product.description }}</p>
                         <div class="input-group quantity mb-5" style="width: 100px;">
                             <div class="input-group-btn">
@@ -233,36 +270,14 @@
                         <div class="mb-4">
                             <h4>Categories</h4>
                             <ul class="list-unstyled fruite-categorie">
+                                {% for item in product_count %}
                                 <li>
                                     <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Apples</a>
-                                        <span>(3)</span>
+                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>{{ item.name }}</a>
+                                        <span>{{ item.count }}</span>
                                     </div>
                                 </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Oranges</a>
-                                        <span>(5)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Strawbery</a>
-                                        <span>(2)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Banana</a>
-                                        <span>(8)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Pumpkin</a>
-                                        <span>(5)</span>
-                                    </div>
-                                </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
@@ -541,6 +556,19 @@
         </div>
     </div>
 </div>
-    
+    <script>
+        const rate = (rating, product_id) => {
+            fetch(`/rate/${product_id}/${rating}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(rest => {
+                window.location.reload();
+                // you may want to update the rating here
+                // to simplify stuff, I just reload the page
+            })
+        }
+    </script>
 <!-- Single Product End -->
 {% endblock main %}

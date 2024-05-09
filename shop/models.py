@@ -38,10 +38,10 @@ RATES = {
 
 
 class Rating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=RATES)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user.username} {self.product.name} {self.rating}"
+        return f"{self.product.name}: {self.rating}"
 

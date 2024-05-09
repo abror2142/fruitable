@@ -1,7 +1,7 @@
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Category, Product
+from .models import Category, Product, Rating
 from .forms import RatingForm, RegisterForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -21,25 +21,33 @@ class AllProductList(ProductList):
     template_name = 'shop/all_products.html'
 
 
-def detail(request, product_id):
-    product = Product.objects.get(pk=product_id)
-    if request.method == 'POST' and request.user.is_authenticated:
-        data = {
-            'user': User.objects.get(username=request.user),
-            'product': product,
-            'rating': request.POST['rating']
-        }
-        form = RatingForm(data=data)
-        if form.is_valid():
-            print(data)
-            form.save()
-            return redirect('index')
-    rating = RatingForm()
+def detail(request, slug):
+    product = Product.objects.get(slug=slug)
+    categories = Category.objects.filter(parent=product.category.parent)
+    product_count = []
+    for category in categories:
+        product_count.append({'name': category.name, 'count': len(category.products.all()), 'slug': category.slug})
+
+    try:
+        rating = Rating.objects.get(product=product, user=request.user).rating
+    except Rating.DoesNotExist:
+        rating = 0
     context = {
         'product': product,
-        'rating': rating
+        'user_rating': rating,
+        'product_count': product_count
     }
-    return render(request, 'shop/detail.html', context=context)
+
+    return render(request, 'shop/detail.html', context)
+
+
+def rate(request: HttpRequest, product_id: int, rating: int) -> HttpResponse:
+    print(product_id, rating)
+    product = Product.objects.get(pk=product_id)
+    Rating.objects.filter(product=product, user=request.user).delete()
+    product.rating_set.create(user=request.user, rating=rating)
+    print(product.rating_set, request.user)
+    return redirect('detail', slug=product.slug)
 
 
 def login_view(request):
@@ -73,7 +81,3 @@ def register(request):
 
 def my_account(request):
     return render(request, 'shop/profile.html')
-
-
-
-
