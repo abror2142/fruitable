@@ -3,10 +3,6 @@
 
 {% block hero %}
 
-
-
-
-
     <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Shop Detail</h1>
@@ -18,7 +14,6 @@
 </div>
 <!-- Single Page Header End -->
 {% endblock hero %}
-
 
 {% block main %}
     <style>
@@ -44,6 +39,7 @@
 <!-- Single Product Start -->
 <div class="container-fluid py-5 mt-5">
     <div class="container py-5">
+
         <div class="row g-4 mb-5">
             <div class="col-lg-8 col-xl-9">
                 <div class="row g-4">
@@ -113,6 +109,7 @@
                                 </button>
                             </div>
                         </nav>
+
                         <div class="tab-content mb-5">
                             <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
                                 <p>The generated Lorem Ipsum is therefore always free from repetition injected humour,
@@ -170,47 +167,19 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                {% for comment in comments %}
                                 <div class="d-flex">
                                     <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3"
                                          style="width: 100px; height: 100px;" alt="">
                                     <div class="">
                                         <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Jason Smith</h5>
-                                            <div class="d-flex mb-3">
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>The generated Lorem Ipsum is therefore always free from repetition injected
-                                            humour, or non-characteristic
-                                            words etc. Susp endisse ultricies nisi vel quam suscipit </p>
+                                        <h5>{{ request.user.username }}</h5>
+                                        <p>{{ comment.content }}</p>
                                     </div>
                                 </div>
-                                <div class="d-flex">
-                                    <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3"
-                                         style="width: 100px; height: 100px;" alt="">
-                                    <div class="">
-                                        <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Sam Peters</h5>
-                                            <div class="d-flex mb-3">
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star text-secondary"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p class="text-dark">The generated Lorem Ipsum is therefore always free from
-                                            repetition injected humour, or non-characteristic
-                                            words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
+
                             <div class="tab-pane" id="nav-vision" role="tabpanel">
                                 <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor
                                     sit. Aliqu diam
@@ -220,41 +189,22 @@
                             </div>
                         </div>
                     </div>
-                    <form action="#">
+
+                    <form method="post">
+                        {% csrf_token %}
                         <h4 class="mb-5 fw-bold">Leave a Reply</h4>
                         <div class="row g-4">
-                            <div class="col-lg-6">
-                                <div class="border-bottom rounded">
-                                    <input type="text" class="form-control border-0 me-4" placeholder="Yur Name *">
-                                </div>
+
+                            <div class="border-bottom rounded my-4">
+                                <textarea name="content" id="comment" class="form-control border-0" cols="30" rows="8"
+                                          placeholder="Your Review *" spellcheck="false"></textarea>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="border-bottom rounded">
-                                    <input type="email" class="form-control border-0" placeholder="Your Email *">
-                                </div>
-                            </div>
+
                             <div class="col-lg-12">
-                                <div class="border-bottom rounded my-4">
-                                    <textarea name="" id="" class="form-control border-0" cols="30" rows="8"
-                                              placeholder="Your Review *" spellcheck="false"></textarea>
-                                </div>
+                                <button type="submit" class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                    Post Comment</button>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="d-flex justify-content-between py-3 mb-5">
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-0 me-3">Please rate:</p>
-                                        <div class="d-flex align-items-center" style="font-size: 12px;">
-                                            <i class="fa fa-star text-muted"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3">
-                                        Post Comment</a>
-                                </div>
-                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -270,135 +220,52 @@
                         <div class="mb-4">
                             <h4>Categories</h4>
                             <ul class="list-unstyled fruite-categorie">
-                                {% for item in product_count %}
+                                {% for category in categories %}
                                 <li>
                                     <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>{{ item.name }}</a>
-                                        <span>{{ item.count }}</span>
+                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>{{category.name }}</a>
+                                        <span>({{ category.products__count }})</span>
                                     </div>
                                 </li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </div>
+
+
                     <div class="col-lg-12">
                         <h4 class="mb-4">Featured products</h4>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded" style="width: 100px; height: 100px;">
-                                <img src="img/featur-1.jpg" class="img-fluid rounded" alt="Image">
-                            </div>
+                        {% for product in discounted_products %}
+                            <a href="{% url 'detail' product.slug %}">
+                            <div class="d-flex align-items-center justify-content-start">
+                                {% if product.image %}
+                                    <div class="rounded" style="width: 100px; height: 100px;">
+                                        <img src="{{ product.image.url }}" class="img-fluid rounded" alt="Image">
+                                    </div>
+                                {% endif %}
                             <div>
-                                <h6 class="mb-2">Big Banana</h6>
+                                <h6 class="mb-2">{{ product.name }}</h6>
+                                {% with product.avg_rating as rating %}
                                 <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star {% if rating > 0 %} text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star {% if rating > 1 %} text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star {% if rating > 2 %} text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star {% if rating > 3 %} text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star {% if rating > 4 %} text-secondary {% endif %}"></i>
                                 </div>
+                                {% endwith %}
                                 <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                    <h5 class="fw-bold me-2">{{ product.discounted_price }} $</h5>
+                                    <h5 class="text-danger text-decoration-line-through">{{ product.price }} $</h5>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded" style="width: 100px; height: 100px;">
-                                <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded" style="width: 100px; height: 100px;">
-                                <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/vegetable-item-4.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/vegetable-item-5.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-start">
-                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                <img src="img/vegetable-item-6.jpg" class="img-fluid rounded" alt="">
-                            </div>
-                            <div>
-                                <h6 class="mb-2">Big Banana</h6>
-                                <div class="d-flex mb-2">
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star text-secondary"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                </div>
-                            </div>
-                        </div>
+                            </a>
+                        {% endfor %}
+
+
                         <div class="d-flex justify-content-center my-4">
-                            <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew
+                            <a href="{% url 'sale_products' %}" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew
                                 More</a>
                         </div>
                     </div>
@@ -413,7 +280,9 @@
                 </div>
             </div>
         </div>
+
         <h1 class="fw-bold mb-0">Related products</h1>
+
         <div class="vesitable">
             <div class="owl-carousel vegetable-carousel justify-content-center">
                 <div class="border border-primary rounded position-relative vesitable-item">

@@ -1,16 +1,27 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Category, Product
+from .models import Category, Product, Comment, Rating
 
 # Register your models here.
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'user', 'rating')
+    list_display_links = ('id',)
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'user', 'created_at')
+    list_display_links = ('id',)
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     prepopulated_fields = {'slug': ('name',)}
-
 
 
 @admin.register(Product)
