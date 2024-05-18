@@ -1,3 +1,5 @@
+import stripe
+from django.conf import settings
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
@@ -6,6 +8,8 @@ from .models import Category, Product, Rating, Comment
 from .forms import RatingForm, RegisterForm, CommentForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
+from utils.cart import CartAuthenticatedUser
+from django.urls import reverse
 
 
 class ProductList(ListView):
@@ -116,3 +120,55 @@ def sale_products_view(request):
         'title': "Barcha Produclar"
     }
     return render(request, 'shop/all_products.html', context)
+
+
+def cart(request):
+    if request.user.is_authenticated:
+        cart_info = CartAuthenticatedUser(request).get_cart_info()
+        context = {
+            'order': cart_info['order'],
+            'order_products': cart_info['order_products'],
+            'total_cart_price': cart_info['total_cart_price'],
+            'total_cart_product': cart_info['total_cart_price'],
+        }
+        print(context)
+        return render(request, 'shop/cart.html', context)
+    else:
+        return redirect('login')
+
+
+def to_cart(request, product_id, action):
+    if request.user.is_authenticated:
+        CartAuthenticatedUser(request, product_id, action)
+        print('Hit')
+        page = request.META.get('HTTP_REFERER')
+        return redirect(page)
+    else:
+        return redirect('login')
+
+
+def create_checkout_session(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    cart_info = CartAuthenticatedUser(request).get_cart_info()
+    total_price = cart_info['total_cart_price']
+    total_quantity = cart_info['total_cart_product']
+    session = stripe.checkout.Session.create(
+        line_items=[{
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': "Online Shop Product"
+                },
+                'unit_amount': int(total_price * 100),
+            },
+            'quantity': 1
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri(reverse('success_payment')),
+        cancel_url=request.build_absolute_uri(reverse('success_payment'))
+    )
+    return redirect(session.url, 303)
+
+
+def success_payment(request):
+    return render(request, 'shop/success.html')

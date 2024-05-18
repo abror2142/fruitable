@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Category, Product, Comment, Rating
+from .models import Category, Product, Comment, Rating, Region, City, Order, OrderProduct, Shipping
 
 # Register your models here.
 

@@ -68,3 +68,81 @@ class Comment(models.Model):
     def __str__(self):
         return self.content[:20]
 
+# Order Products
+
+
+class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.customer} {self.created}"
+
+    @property
+    def get_cart_total_price(self):
+        products = self.orderproduct_set.all()
+        total_price = sum([product.get_total_price for product in products])
+        return total_price
+
+    @property
+    def get_total_cart_product(self):
+        return len(self.orderproduct_set.all())
+
+
+class OrderProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    quantity = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.order} {self.product}"
+
+    @property
+    def get_total_price(self):
+        return self.quantity * self.product.price
+
+
+class Region(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Shipping(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    address = models.CharField(max_length=100)
+    district = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    zip_code = models.IntegerField()
+    mobile = models.CharField(max_length=13)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.order} {self.city}"
+
+
+
+
+
+
+
+

@@ -16,29 +16,32 @@
     </head>
 
     <body>
-{% block header %}
-        <!-- Spinner Start -->
-        {% include 'components/_spinner.html' %}
-        <!-- Spinner End -->
+    <div>
+        {% block header %}
+                <!-- Spinner Start -->
+                {% include 'components/_spinner.html' %}
+                <!-- Spinner End -->
 
 
-        <!-- Navbar start -->
-        {% include 'components/_navbar.html' %}
-        <!-- Navbar End -->
+                <!-- Navbar start -->
+                {% include 'components/_navbar.html' %}
+                <!-- Navbar End -->
 
 
-        <!-- Modal Search Start -->
-        {% include 'components/_modal_search.html' %}
-        <!-- Modal Search End -->
-{% endblock header %}
-
+                <!-- Modal Search Start -->
+                {% include 'components/_modal_search.html' %}
+                <!-- Modal Search End -->
+        {% endblock header %}
+    </div>
+ <div class="mt-5">
         {% block hero %}
         {% endblock hero %}
-
 
         {% block main %}
         {% endblock main %}
 
+ </div>
+    <div>
         <!-- Footer Start -->
         {% include 'components/_footer.html' %}
         <!-- Footer End -->
@@ -47,7 +50,7 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 
-
+    </div>
     {% include 'components/_scripts.html' %}
     </body>
 
